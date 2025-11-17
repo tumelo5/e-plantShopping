@@ -3,6 +3,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { addItem } from './CartSlice';
 import './ProductList.css';
 import CartItem from './CartItem';
+import peace_lily from './images/peace_lily.jpg'; 
+import snake_plant from './images/snake_plant.jpg';
+import aloe_vera from './images/aloe_vera.jpg';
+import rose_bush from './images/rose_bush.jpg';
+import lavender from './images/lavender.jpg';
+import marigold from './images/marigold.jpg';
+import echeveria from './images/echeveria.jpg';
+import jade_plant from './images/jade_plant.jpg';
+import haworthia from './images/haworthia.webp';
 
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
@@ -13,7 +22,78 @@ function ProductList({ onHomeClick }) {
         state.cart.items.reduce((sum, item) => sum + item.quantity, 0)
     );
 
-    const plantsArray = [/* ... unchanged plant data ... */];
+    const plantsArray = [
+   {
+    category: "Indoor Plants",
+    plants: [
+      { 
+        name: "Peace Lily", 
+        image: peace_lily, 
+        description: "Elegant indoor plant, purifies the air.", 
+        cost: "$120" 
+      },
+      { 
+        name: "Snake Plant", 
+        image: aloe_vera, 
+        description: "Low-maintenance, ideal for bedrooms.", 
+        cost: "$100" 
+      },
+      { 
+        name: "Aloe Vera", 
+        image: snake_plant, 
+        description: "Medicinal plant, thrives indoors.", 
+        cost: "$90" 
+      },
+    ]
+  },
+  {
+    category: "Outdoor Plants",
+    plants: [
+      { 
+        name: "Rose Bush", 
+        image: rose_bush, 
+        description: "Beautiful flowering plant, ideal for gardens.", 
+        cost: "$150" 
+      },
+      { 
+        name: "Lavender", 
+        image: lavender, 
+        description: "Fragrant herb, attracts pollinators.", 
+        cost: "$120" 
+      },
+      { 
+        name: "Marigold", 
+        image: marigold, 
+        description: "Bright and easy-to-grow outdoor flower.", 
+        cost: "$80" 
+      },
+    ]
+  },
+  {
+    category: "Succulents",
+    plants: [
+      { 
+        name: "Echeveria", 
+        image: echeveria, 
+        description: "Small rosette succulent, low water needs.", 
+        cost: "$70" 
+      },
+      { 
+        name: "Jade Plant", 
+        image: jade_plant, 
+        description: "Popular succulent, symbolizes prosperity.", 
+        cost: "$110" 
+      },
+      {
+        name: "Haworthia", 
+        image: haworthia, 
+        description: "Small, hardy succulent, easy to maintain.", 
+        cost: "$60" 
+      },
+    ]
+  }
+];
+
 
     const styleObj = {
         backgroundColor: '#4CAF50',
@@ -59,10 +139,14 @@ function ProductList({ onHomeClick }) {
         setShowCart(false);
     };
 
-    const handleAddToCart = (plant) => {
+   const handleAddToCart = (plant) => {
         dispatch(addItem(plant));
-        setAddedToCart(prev => ({ ...prev, [plant.name]: true }));
-    };
+        setAddedToCart((prev) => ({
+    ...prev,
+    [plant.name]: true, // only this plant’s button gets disabled
+  }));
+};
+
 
     return (
         <div>
@@ -95,24 +179,36 @@ function ProductList({ onHomeClick }) {
             </div>
 
             {!showCart ? (
-                <div className="product-grid">
-                    {plantsArray.map(category =>
-                        category.plants.map((plant, index) => (
+                  <div className="product-grid">
+                    {plantsArray.map((categoryItem, catIndex) => (
+                      <div key={catIndex}>
+                        <h2>{categoryItem.category}</h2>
+                        <div className="product-list">
+                          {categoryItem.plants.map((plant, index) => (
                             <div className="product-card" key={index}>
-                                <h3>{plant.name}</h3>
-                                <img src={plant.image} alt={plant.name} style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
-                                <p>{plant.description}</p>
-                                <p><strong>{plant.cost}</strong></p>
-                                <button onClick={() => handleAddToCart(plant)}>
-                                    {addedToCart[plant.name] ? 'Added' : 'Add to Cart'}
-                                </button>
+                              <h3>{plant.name}</h3>
+                              <img
+                                src={plant.image}
+                                alt={plant.name}
+                                style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                              />
+                              <p>{plant.description}</p>
+                              <p><strong>{plant.cost}</strong></p>
+                              <button onClick={() => handleAddToCart(plant)}
+                                disabled={addedToCart[plant.name] === true }
+                              >
+                                {addedToCart[plant.name] ? 'Added' : 'Add to Cart'}
+                              </button>
                             </div>
-                        ))
-                    )}
-                </div>
-            ) : (
-                <CartItem onContinueShopping={handleContinueShopping} />
-            )}
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <CartItem onContinueShopping={handleContinueShopping} />
+                )}
+
         </div>
     );
 }
